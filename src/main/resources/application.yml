@@ -1,0 +1,42 @@
+# Server Configuration
+server:
+  port: 8080
+
+# Database Configuration
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/view/
+      suffix: .jsp
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecom-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # File Upload
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Logging
+logging:
+  level:
+    org.springframework: INFO
+    com.veda.ecom: DEBUG
+
+app:
+  jwtSecret: dGhpc2lzYXZlcnl2ZXJ5bG9uZ3JhbmRvbXNlY3JldGtleTEyMzQ1Njc4OTA=
+  jwtExpiration: 1296000000

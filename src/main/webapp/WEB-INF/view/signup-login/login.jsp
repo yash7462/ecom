@@ -30,8 +30,29 @@
                 <li><a href="#">About us</a></li>
                 <li><a href="#">Contact us</a></li>
             </ul>
-            <button class="login-btn main-btn" id="main-login-btn">LOG IN</button>
-            <button class="logout-btn main-btn" id="main-logout-btn" style="display: none;">LOG OUT</button>
+
+                <div class="user-account-container">
+                    <button class="user-icon" id="user-account">
+                        <i class="material-symbols-rounded">person</i>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="user-logged-in">
+                            <a href="#" id="profile-link">
+                                <i class="material-symbols-rounded">account_circle</i> My Profile
+                            </a>
+                            <div class="divider"></div>
+                            <a href="#" id="logout-link">
+                                <i class="material-symbols-rounded">logout</i> Logout
+                            </a>
+                        </div>
+                        <div class="user-without-logged-in">
+                            <a class="login-btn" href="#" id="login-link">
+                                <i class="material-symbols-rounded">login</i> Log In
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
         </nav>
     </header>
 
@@ -109,11 +130,54 @@
         console.log("Main Page Loaded");
         hideError();
 
-        $("#main-logout-btn").click(function() {
-            localStorage.removeItem("jwtToken");
-            localStorage.removeItem("user-details");
-            checkUserLoggedInOrNot();
+        // Toggle user dropdown
+        const userIcon = document.getElementById('user-account');
+        const userDropdown = document.getElementById('user-dropdown');
+
+        if (userIcon) {
+            userIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-account-container')) {
+                userDropdown.classList.remove('show');
+            }
         });
+
+        // Logout functionality
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem("jwtToken");
+                localStorage.removeItem("user-details");
+                checkUserLoggedInOrNot();
+                console.log('Logout clicked');
+            });
+        }
+
+        // Profile link functionality
+        const profileLink = document.getElementById('profile-link');
+        if (profileLink) {
+            profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Add your profile page navigation logic here
+                console.log('Profile clicked');
+                // Example: window.location.href = '/profile';
+            });
+        }
+
+
+        //$("#main-logout-btn").click(function() {
+          //  localStorage.removeItem("jwtToken");
+            //localStorage.removeItem("user-details");
+            //checkUserLoggedInOrNot();
+        //});
+
 
         $("#loginBtn").click(function() {
            if($('#loginEmail').val() == undefined || $('#loginEmail').val() == null || $('#loginEmail').val() == "") {
@@ -183,7 +247,8 @@
                 success: function(response) {
                     if (response.status === 200) {
                         // Store Data in localStorage
-                        localStorage.setItem('user-details', response.data);
+                        const jsonStr = JSON.stringify(response.data);
+                        localStorage.setItem('user-details', jsonStr);
                         console.log('User Verified Successful');
 
                         hideMainLoginBtn();
@@ -203,16 +268,15 @@
             showMainLoginBtn();
         }
 
-
     }
 
     function showMainLoginBtn() {
-        $('#main-logout-btn').hide();
-        $('#main-login-btn').show();
+        $('.user-without-logged-in').show();
+        $('.user-logged-in').hide();
     }
     function hideMainLoginBtn() {
-        $('#main-login-btn').hide();
-        $('#main-logout-btn').show();
+        $('.user-without-logged-in').hide();
+        $('.user-logged-in').show();
     }
 
     // Add this function to include the token in all future AJAX requests
